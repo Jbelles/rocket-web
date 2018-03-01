@@ -1,0 +1,60 @@
+<template>
+    <div>
+        <div class="inputTable_container">
+            <div class="inputTable">
+                <h1>Check Pool Votes</h1>
+            </div>
+            <div class="inputTable">
+                <div class="inputTable_title">
+                    <span id="Pool-Input">Pool Id:</span>
+                </div>
+                <div class="inputTable_content input-group-append">
+                    <input id='pool_id' v-model="pool_id" placeholder="Public Key" type="text">
+                    <button v-on:click="Scan" class="btn btn-outline-secondary" style="padding:0;">
+                        <img src="../../../wwwroot/qr-code.png" width="28" height="28" style="margin-left:3px;" />
+                    </button>
+                </div>
+            </div>
+            <div v-if="pool != null || pool_error != ''" class="inputTable">
+                <div class="inputTable_title">
+                    <span id="Pool-Input">Votes:</span>
+                </div>
+                <div v-if="pool != null && pool.votes != 0" class="inputTable_content success">
+                    <input readonly id='pool_id' v-model="pool.votes" type="text">
+                </div>
+                <div v-else-if="pool_error != ''" class="inputTable_content error">
+                    <input readonly id='pool_id' v-bind:value="pool_error" type="text">
+                </div>
+                <div v-else class="inputTable_content warning">
+                    <input readonly id='pool_id' value="No one is voting for this account." type="text">
+                </div>
+            </div>
+            <div v-else-if="loading" class="inputTable">
+                <div class="inputTable_title">
+                    <span id="Pool-Input">Votes:</span>
+                </div>
+                <div class="inputTable_content warning">
+                    <input readonly id='pool_id' value="loading..." type="text">
+                </div>
+            </div>
+        </div>
+        <div v-if="scanning" style="width: 100%; text-align: center;">
+            <div v-on:click="endScan" style="font-size: 30px; font-weight: bold; color:#CD3E47; width: 30px; margin-left: calc(50% - 15px); cursor: pointer">&#10006</div>
+            <video style="display: inline-block;" id="preview"></video>
+        </div>
+        <ul v-if="pool_id == null || pool_id == ''" style="padding: 2em; margin-top: 1em; border: 2px solid yellow;">
+            <li>
+                We run our own watcher node so this information is as up to date as it can possibly get.
+            </li>
+            <li>
+                Shameless plug of our pool: GCFXD4OBX4TZ5GGBWIXLIJHTU2Z6OWVPYYU44QSKCCU7P2RGFOOHTEST
+            </li>
+        </ul>
+
+    </div>
+
+
+</template>
+
+<script src="./pools.ts"></script>
+<style src="./pools.css" />

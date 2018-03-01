@@ -1,0 +1,63 @@
+<template>
+    <div class="main-nav">
+        <div class="navbar navbar-inverse">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span id="icon"><img src="Icon-27.5@2x@2x.png" style="height:50px;width:50px;display:inline-block;padding:2px; margin:6px; border-radius: 20%;" /></span>
+                <span id="icon_title">Rocket</span>
+            </div>
+            <div class="clearfix"></div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <router-link to="/" :exact="true" id="wallet-nav">
+                            <span class="glyphicon glyphicon-home"></span>
+                            <span v-if="accountId != null" id="wallet-nav">Your Wallet</span>
+                            <span v-else>Import</span>
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/create">
+                            <span class="glyphicon glyphicon-plus"></span> Create
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/account">
+                            <span class="glyphicon glyphicon-eye-open"></span> Account Lookup
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/send">
+                            <span class="glyphicon glyphicon-arrow-right"></span> Send
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/inflation">
+                            <span class="glyphicon glyphicon-arrow-up"></span> Set Inflation Destination
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/pools">
+                            <span class="glyphicon glyphicon-globe"></span> Pools
+                        </router-link>
+                    </li>
+                </ul>
+                <div id="donation" style=" overflow: hidden; margin-left: 1em; margin-right: 1em;">
+                    <div id="title" style="height: 2em; top: 2em; text-align: center;">Donation Address:</div>
+                    <div id="address" style="height: 2em; top: 2em; text-align: center; font-size: 8px; cursor: pointer" class="js-tooltip js-copy" data-toggle="tooltip" data-copy="GDH255734NZF4E6FHSOLSIZ7C5HSU5BJ7MY6KNNEI5M2LIO3CZSCTZ4M" title="Copy to clipboard">GDH255734NZF4E6FHSOLSIZ7C5HSU5BJ7MY6KNNEI5M2LIO3CZSCTZ4M</div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</template>
+
+<style src="./navmenu.css" />
+<script src="./navmenu.ts"></script>
+

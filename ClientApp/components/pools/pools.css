@@ -1,0 +1,131 @@
+﻿.inputTable {
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    margin: .75em 1em;
+    background: #f4f4f5;
+    border: 1px solid transparent;
+    background-color: #222;
+}
+.inputTable_container {
+    border: 3px solid #222;
+    border-radius: 3px;
+    margin-top: 3em;
+}
+.inputTable_container input,
+.inputTable_container_incoming input,
+.inputTable_container_outgoing input {
+    background-color: white;
+}
+.inputTable_container_outgoing {
+    border: .5px solid #CD3E47;
+    border-radius: 3px;
+    margin-top: 3em;
+}
+.inputTable_container_incoming {
+    border: .5px solid #2DC55D;
+    border-radius: 3px;
+    margin-top: 3em;
+}
+.inputTable_title {
+    min-width: 8em;
+    max-width: 12em;
+    flex: 0 0 25%;
+    padding: 1.1em 1em 1em;
+    white-space: nowrap;
+}
+
+.inputTable_content {
+    display: flex;
+    flex: 12 0 0%;
+    padding: .75em 1em;
+    margin-top: .2em;
+    white-space: nowrap;
+}
+
+.inputTable_title span {
+    font-size: 18px;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.inputTable_content input {
+    border: 1px solid #bdbfc0;
+    color: #3a3f43;
+    padding: .35em 1em .3166em;
+    height: 2.5em;
+    border-radius: 3px;
+    width: 95%;
+    text-align: center;
+}
+.inputTable_content .btn {
+    height: 2.5em;
+    width: 2.5em;
+    vertical-align: auto;
+    padding-left: .63em;
+    padding-bottom: .5em;
+    text-align: left;
+    box-shadow: 0 0 1pt 1pt #9d9d9d;
+    margin-bottom: .1em;
+    margin-left: .1em;
+    float: right;
+}
+.inputTable_content .dropdown-toggle {
+    height: auto;
+    width: auto;
+    vertical-align: auto;
+    text-align: center;
+    float: none;
+}
+.error input{
+    box-shadow: 0 0 .5pt .5pt #CD3E47;
+}
+.success input {
+    box-shadow: 0 0 .5pt .5pt #2DC55D;
+}
+#amount[title]:hover:after {
+    background-color: red;
+    position: absolute;
+}
+.warning input {
+    box-shadow: 0 0 .5pt .5pt yellow;
+}
+.inputTable canvas {
+    margin-top: .7em;
+    margin-left: 1em;
+    box-shadow: 0 0 1pt 1pt white;
+    border-radius: 50% !important;
+    height: 50px;
+    width: 56px;
+}
+.inputTable_misc {
+    padding: .75em 1em;
+}
+.inputTable h1{
+    width: 100%;
+    text-align: center;
+}
+
+.inputTable_misc .btn {
+    background-color: #222;
+    color: #9d9d9d;
+}
+
+.inputTable_misc button:focus {
+    outline-style: none !important;
+}
+.inputTable_misc button:active {
+    outline: 1px solid #9d9d9d !important;
+    border: 1px solid #9d9d9d !important;
+    border-style: outset !important;
+    outline-style: none !important;
+}
+
+.inputTable_misc .btn:hover {
+    color: white;
+}
+
+.dropdown-menu div:hover {
+    color: #222;
+    background-color: #9d9d9d;
+}

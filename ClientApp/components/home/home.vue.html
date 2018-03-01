@@ -1,0 +1,203 @@
+﻿<template>
+    <div>
+        <div v-if="environment == 'test'" style="padding-top:.2em; background-color:#CD3E47; color: white; text-align:center" >TESTNET</div>
+        <div v-if="(secret == null || accountId == null) && !found" class="inputTable_container">
+            <div class="inputTable">
+                <h1>Import Wallet</h1>
+            </div>
+            <div class="inputTable">
+                <div class="inputTable_title">
+                    <span>Secret:</span>
+                </div>
+                <div class="inputTable_content input-group-append">
+                    <input id='secret' v-model="secret" placeholder="secret key" class="form-control" type="text">
+                    <button v-on:click="Scan" class="btn btn-outline-secondary" style="padding:0;">
+                        <img src="../../../wwwroot/qr-code.png" width="28" height="28" style="margin-left:3px;" />
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div v-if="scanning" style="width: 100%; text-align: center;">
+            <div v-on:click="endScan" style="font-size: 30px; font-weight: bold; color:#CD3E47; width: 30px; margin-left: calc(50% - 15px); cursor: pointer" >&#10006</div>
+            <video style="display: inline-block;" id="preview"></video>
+        </div>
+        <div id="secret-qr-wrapper">
+            <canvas style="position: absolute; height: 30em; width: 30em; left: calc(50% - 12.5em); box-shadow: 0 0 100px 50px black;" hidden id="secret-qr"></canvas>
+        </div>
+        <div id="account-qr-wrapper">
+            <canvas style="position: absolute; height: 30em; width: 30em; left: calc(50% - 12.5em); box-shadow: 0 0 100px 50px black;" hidden id="account-qr"></canvas>
+        </div>
+        <ul v-if="(secret == null || accountId == null) && !found" style="padding: 2em; margin-top: 1em; border: 2px solid #CD3E47; ">
+            <li>
+                Please take a second to verify you are at the correct url and https is enabled.
+            </li>
+            <li>
+                Once you import a wallet it will remain available until you close the app, please be careful about leaving yourself vulnerable in a public area.
+            </li>
+            <li>
+                Rocket does not send any sensitive information you provide anywhere other than to the stellar API.
+            </li>
+        </ul>
+        <div v-if="accountId != null" class="inputTable_container">
+            <div>
+                <div id="Wallet" class="inputTable">
+                    <h1>Account</h1>
+                    <button class="btn btn-outline-secondary glyphicon glyphicon-download js-tooltip" data-toggle="tooltip"  title="Download Paper Wallet" v-on:click="showPDF" style="margin-right: 1.3em; margin-top: 1em; margin-bottom: 1em;">
+                    </button>
+                </div>
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">
+                            Secret:
+                            <img @mouseover="showSecretQR" @mouseleave="hideSecretQR" src="../../../wwwroot/qr-code.png" width="35" height="35" style="margin-left: 3.1em;  margin-top: -.1em;" />
+                        </span>
+                    </div>
+                    <div class="inputTable_content input-group-append">
+                        <input readonly id='pool_id' v-model="secret" placeholder="Secret Seed" type="text">
+                        <button class="btn btn-outline-secondary js-tooltip js-copy" data-toggle="tooltip" v-bind:data-copy="secret" title="Copy to clipboard">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">
+                            Account Id:
+                            <img @mouseover="showAccountQR" @mouseleave="hideAccountQR" src="../../../wwwroot/qr-code.png" width="35" height="35" style="margin-left: 1.2em; margin-top: -.1em;" />
+                        </span>
+                    </div>
+                    <div class="inputTable_content input-group-append">
+                        <input readonly id="accountId" v-model="accountId" placeholder="public key" type="text">
+                        <button class="btn btn-outline-secondary js-tooltip js-copy" data-toggle="tooltip" v-bind:data-copy="accountId" title="Copy to clipboard">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span>Inflation Destination:</span>
+                    </div>
+                    <div v-if="inflation_destination != null" class="inputTable_content input-group-append">
+                        <input readonly v-model="inflation_destination">
+                        <button class="btn btn-outline-secondary js-tooltip js-copy" data-toggle="tooltip" v-bind:data-copy="inflation_destination" title="Copy to clipboard">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                        </button>
+                    </div>
+                    <div v-else class="inputTable_content error">
+                        <input readonly value="This account has not set an inflation_destination.">
+                    </div>
+                </div>
+                <div v-for="(balance, index) in balances" v-if="balances.length > 0" class="inputTable">
+                    <div class="inputTable_title">
+                        <span>{{balances[index].asset_type == "native" ? "XLM" : balances[index].asset_code }}:</span>
+                    </div>
+                    <div class="inputTable_content">
+                        <input readonly v-model="balances[index].balance">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <h1 v-if="loadingWallet"> loading wallet...</h1>
+        <div v-if="loadWalletErrorMessage" class="inputTable">
+            <div class="inputTable_title">
+                <span>Error:</span>
+            </div>
+            <div class="inputTable_content error">
+                <input readonly v-model="loadWalletErrorMessage" type="text">
+            </div>
+        </div>
+        <div v-if="paymentHistory.length != 0" id="history">
+            <div class="inputTable_container">
+                <div class="inputTable">
+                    <h1>Transaction History:</h1>
+                </div>
+            </div>
+            <div v-for="(payment, index) in paymentHistory">
+                <div v-if="payment.to != accountId" class="inputTable_container_outgoing">
+                    <div class="inputTable">
+                        <div v-bind:id="'payment-'+index" class="inputTable_title error">
+                            <span>To:</span>
+                        </div>
+                        <div class="inputTable_content input-group-append error">
+                            <input readonly v-model="payment.to">
+                            <button class="btn btn-outline-secondary js-tooltip js-copy" data-toggle="tooltip" v-bind:data-copy="payment.to" title="Copy to clipboard">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="inputTable">
+                        <div class="inputTable_title">
+                            <span>Amount:</span>
+                        </div>
+                        <div v-if="payment.asset_code == null" class="inputTable_content error">
+                            <input readonly v-bind:value="payment.amount + ' ($'+ (payment.amount * currentPrice).toFixed(2)  + ')'">
+                        </div>
+                        <div v-else class="inputTable_content error">
+                            <input readonly v-bind:value="payment.amount">
+                        </div>
+                    </div>
+                    <div class="inputTable">
+                        <div class="inputTable_title">
+                            <span>Asset:</span>
+                        </div>
+                        <div class="inputTable_content error">
+                            <input readonly v-model="payment.asset_code == null ? 'XLM' : payment.asset_code">
+                        </div>
+                    </div>
+                    <div class="inputTable">
+                        <div class="inputTable_title">
+                            <span>Date:</span>
+                        </div>
+                        <div class="inputTable_content error">
+                            <input readonly v-model="payment.created_at">
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="inputTable_container_incoming">
+                    <div class="inputTable">
+                        <div v-bind:id="'payment-'+index" class="inputTable_title">
+                            <span>From:</span>
+                        </div>
+                        <div class="inputTable_content input-group-append success">
+                            <input readonly v-model="payment.from">
+                            <button class="btn btn-outline-secondary js-tooltip js-copy" data-toggle="tooltip" v-bind:data-copy="payment.from" title="Copy to clipboard">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="inputTable">
+                        <div class="inputTable_title">
+                            <span>Amount:</span>
+                        </div>
+                        <div v-if="payment.asset_code == null" class="inputTable_content success">
+                            <input readonly v-bind:value="payment.amount + ' ($'+ (payment.amount * currentPrice).toFixed(2)  + ')'">
+                        </div>
+                        <div v-else class="inputTable_content success">
+                            <input readonly v-bind:value="payment.amount">
+                        </div>
+                    </div>
+                    <div class="inputTable">
+                        <div class="inputTable_title">
+                            <span>Asset:</span>
+                        </div>
+                        <div class="inputTable_content success">
+                            <input readonly v-model="payment.asset_code == null ? 'XLM' : payment.asset_code">
+                        </div>
+                    </div>
+                    <div class="inputTable">
+                        <div class="inputTable_title">
+                            <span>Date:</span>
+                        </div>
+                        <div class="inputTable_content success">
+                            <input readonly v-model="payment.created_at">
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="payment-item" v-bind:id="'payment-' + index"></div>-->
+            </div>
+        </div>
+    </div>
+</template>
+<script src="./home.ts"></script>
+<style src="./home.css" />

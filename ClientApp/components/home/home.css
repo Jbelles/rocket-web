@@ -1,0 +1,58 @@
+﻿
+body {
+    background-color: #1C3044;
+    font-family: 'Roboto', sans-serif;
+    color: #9d9d9d;
+}
+.input-group-append input {
+    box-shadow: 0 0 1pt 1pt #9d9d9d;
+}
+h1 canvas {
+    box-shadow: 0 0 1pt 1pt white;
+}
+.payment canvas {
+    box-shadow: 0 0 1pt 1pt #2DC55D;
+}
+h1 canvas,
+.payment canvas {
+    border-radius: 50% !important;
+}
+.inputTable_title canvas {
+    height: 25px !important;
+    width: 25px !important;
+    position: absolute !important;
+    margin-top: .15em !important;
+    margin-left: 6em !important;
+    overflow: hidden;
+}
+.inputTable_container_outgoing .inputTable_title canvas {
+    margin-left: 7.65em !important;
+}
+.payment-item{
+    position: relative;
+}
+.input-group{
+    display: inline;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.form-control,
+.input-group .form-control{
+    display: inline-block;
+    width: 80%;
+    text-align: center;
+}
+.contact {
+  background-color: #fff;
+  padding: 15px;
+  max-width: 200px;
+  margin: 30px auto;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  vertical-align: middle;
+}

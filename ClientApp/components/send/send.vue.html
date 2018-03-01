@@ -1,0 +1,116 @@
+<template>
+    <div>
+        <div v-if="environment == 'test'" style="padding-top:.2em; background-color:#CD3E47; color: white; text-align:center">TESTNET</div>
+        <div v-if="secret != null">
+            <div class="inputTable_container">
+                <div class="inputTable">
+                    <div id="destinationAddress" class="inputTable_title">
+                        <span>Destination Id:</span>
+                    </div>
+                    <div class="inputTable_content input-group-append">
+                        <input id='pool_id' v-model="destinationId" placeholder="Destination Account Id" type="text">
+                        <button v-on:click="Scan" class="btn btn-outline-secondary" style="padding:0;">
+                            <img src="../../../wwwroot/qr-code.png" width="28" height="28" style="margin-left:3px;" />
+                        </button>
+                    </div>
+                </div>
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">Amount:</span>
+                    </div>
+                    <div class="inputTable_content input-group-append">
+                        <input v-if="currentAsset.code == 'XLM'" readonly v-bind:value="amount != null ?  'USD: $'+ (amount * currentPrice).toFixed(2) : 'USD: $0.00'" style=" width: 25%;">
+                        <input v-model="amount" placeholder="E.G. 120.005">
+                    </div>
+                </div>
+                <div v-if="assets.length > 1" class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">Asset:</span>
+                    </div>
+                    <div class="inputTable_content input-group-append dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {{currentAsset.code}}
+                            <span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <div v-for="asset in assets" v-on:click="SetAsset(asset)">{{asset.asset_type != 'native' ? asset.asset_code : 'XLM'}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inputTable_misc">
+                    <button class="btn" v-on:click="Send">Send</button>
+                </div>
+            </div>
+            <div v-if="scanning" style="width: 100%; text-align: center;">
+                <div v-on:click="endScan" style="font-size: 30px; font-weight: bold; color:#CD3E47; width: 30px; margin-left: calc(50% - 15px); cursor: pointer">&#10006</div>
+                <video style="display: inline-block;" id="preview"></video>
+            </div>
+            <div v-if="sent" class="inputTable_container">
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">Result:</span>
+                    </div>
+                    <div class="inputTable_content success">
+                        <input readonly id="response" value="Successfully sent!" type="text">
+                    </div>
+                </div>
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">Link:</span>
+                    </div>
+                    <div class="inputTable_content success input-group-append">
+                        <input readonly id="response" v-model="tran._links.transaction.href" type="text">
+                        <button id="link" class="btn btn-outline-secondary js-tooltip js-copy" data-toggle="tooltip" v-bind:data-copy="tran._links.transaction.href" title="Copy to clipboard">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div v-else-if="sending" class="inputTable">
+                <div class="inputTable_title">
+                    <span id="Pool-Input">Result:</span>
+                </div>
+                <div class="inputTable_content warning">
+                    <input readonly id="response" value="Sending..." type="text">
+                </div>
+            </div>
+            <div v-else-if="createPrompt" class="inputTable_container">
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">Warning:</span>
+                    </div>
+                    <div class="inputTable_content warning">
+                        <input readonly value="The given account does not exist, would you like to create and fund it?" type="text">
+                    </div>
+                </div>
+                <div class="inputTable_misc">
+                    <button class="btn" v-on:click="Create">Create</button>
+                </div>
+            </div>
+            <div v-else-if="errorMessage != null" class="inputTable_container">
+                <div class="inputTable">
+                    <div class="inputTable_title">
+                        <span id="Pool-Input">Error:</span>
+                    </div>
+                    <div class="inputTable_content error">
+                        <input readonly v-bind:value="errorMessage" type="text">
+                    </div>
+                </div>
+            </div>
+            <ul v-if="!sending && !sent" style="padding: 2em; margin-top: 1em; border: 2px solid yellow;">
+                <li>
+                    If you attempt to send money to an inactive account you will be prompted to instead create the account, make sure you have the private key before doing this.
+                </li>
+            </ul>
+        </div>
+        <div v-else>
+            <div class="inputTable_container">
+                <div id="Wallet" class="inputTable">
+                    <h1 style="color:#CD3E47">You must import a wallet to send Lumens</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script src="./send.ts"></script>
