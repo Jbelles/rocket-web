@@ -85,7 +85,7 @@ export default class HomeComponent extends Vue {
             if (error) console.error(error)
             console.log('success!');
         });
-        QRCode.toCanvas(document.getElementById('account-qr'), JSON.stringify({ "stellar": { "account": { network: self.environment == 'test' ? "cee0302d" : '7ac33997' }, "key": self.accountId } }), function (error) {
+        QRCode.toCanvas(document.getElementById('account-qr'), JSON.stringify({ "stellar": { "account": { network: self.environment == 'test' ? "cee0302d" : '7ac33997', "id": self.accountId }} }), function (error) {
             if (error) console.error(error)
             console.log('success!');
         });
@@ -155,7 +155,8 @@ export default class HomeComponent extends Vue {
         setTimeout(function () { self.scanner.stop(); }, 2500);
     }
     Scan() {
-        if(this.scanner != null) this.scanner.stop();
+        if (this.scanner != null) this.scanner.stop();
+        this.scanning = true;
         var self = this;
         this.$nextTick(function () {
             self.scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
@@ -164,12 +165,18 @@ export default class HomeComponent extends Vue {
                 self.scanner.stop();
                 self.scanning = false;
 
-                self.secret = JSON.parse(content).stellar.account.id;
+                var json = JSON.parse(content);
+                if (json.stellar.key != null) {
+                    self.secret = json.stellar.key;
+                }
+                else {
+                    self.secret = json.stellar.account.id;
+                }
             });
             Instascan.Camera.getCameras().then(function (cameras) {
                 if (cameras.length > 0) {
-                    self.scanning = true;
                     self.scanner.start(cameras[0]);
+                    self.scanning = true;
                 } else {
                     console.error('No cameras found.');
                 }
@@ -177,7 +184,7 @@ export default class HomeComponent extends Vue {
                 console.error(e);
                 self.scanner.stop();
             });
-            });
+        });
     }
     GenerateImageBlock(accountId) {
         var icon = createIcon({ // All options are optional

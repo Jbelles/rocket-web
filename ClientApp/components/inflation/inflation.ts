@@ -119,6 +119,7 @@ export default class InflationComponent extends Vue {
     Scan() {
         if (this.scanner != null) this.scanner.stop();
         var self = this;
+        this.scanning = true;
         this.$nextTick(function () {
             self.scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
             self.scanner.addListener('scan', function (content) {

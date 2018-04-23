@@ -130,6 +130,7 @@ export default class AccountComponent extends Vue {
     Scan() {
         if (this.scanner != null) this.scanner.stop();
         var self = this;
+        this.scanning = true;
         this.$nextTick(function () {
             self.scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
             self.scanner.addListener('scan', function (content) {
@@ -137,7 +138,7 @@ export default class AccountComponent extends Vue {
                 self.scanner.stop();
                 self.scanning = false;
 
-                self.secret = JSON.parse(content).stellar.account.id;
+                self.destinationId = JSON.parse(content).stellar.account.id;
             });
             Instascan.Camera.getCameras().then(function (cameras) {
                 if (cameras.length > 0) {

@@ -58,7 +58,9 @@ li canvas {
         padding: 0px;
     }
     .collapse #donation {
-        margin-top: 130%;
+       position:absolute !important;
+       text-align:center;
+       bottom: 1.5%;
     }
     .collapse #donation #address:hover {
         color: #2DC55D;

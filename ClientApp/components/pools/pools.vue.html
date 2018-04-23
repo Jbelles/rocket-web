@@ -40,14 +40,14 @@
         </div>
         <div v-if="scanning" style="width: 100%; text-align: center;">
             <div v-on:click="endScan" style="font-size: 30px; font-weight: bold; color:#CD3E47; width: 30px; margin-left: calc(50% - 15px); cursor: pointer">&#10006</div>
-            <video style="display: inline-block;" id="preview"></video>
+            <video autoplay playsinline style="display: inline-block;" id="preview"></video>
         </div>
         <ul v-if="pool_id == null || pool_id == ''" style="padding: 2em; margin-top: 1em; border: 2px solid yellow;">
             <li>
                 We run our own watcher node so this information is as up to date as it can possibly get.
             </li>
             <li>
-                Shameless plug of our pool: GCFXD4OBX4TZ5GGBWIXLIJHTU2Z6OWVPYYU44QSKCCU7P2RGFOOHTEST
+                Check out the <a href="https://lumenaut.net/" target="_blank" style="color: #2DC55D;">Lumenaut Community Pool</a>: GCCD6AJOYZCUAQLX32ZJF2MKFFAUJ53PVCFQI3RHWKL3V47QYE2BNAUT
             </li>
         </ul>
 
